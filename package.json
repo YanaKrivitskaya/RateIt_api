@@ -1,0 +1,36 @@
+{
+  "name": "rateit_api",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/YanaKrivitskaya/RateIt_api#readme",
+  "bugs": {
+    "url": "https://github.com/YanaKrivitskaya/RateIt_api/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YanaKrivitskaya/RateIt_api.git"
+  },
+  "license": "ISC",
+  "author": "YK",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-list-endpoints": "^7.1.1",
+    "fs": "^0.0.1-security",
+    "html-to-text": "^9.0.5",
+    "joi": "^17.13.3",
+    "juice": "^11.0.1",
+    "nodemailer": "^7.0.3",
+    "otp-generator": "^4.0.1",
+    "path": "^0.12.7",
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7"
+  }
+}
