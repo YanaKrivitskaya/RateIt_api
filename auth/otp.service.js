@@ -1,5 +1,6 @@
 const otpGenerator = require('otp-generator');
 const nodemailer = require('nodemailer');
+const db = require('../db');
 const fs = require('fs');
 const ejs = require('ejs');
 const {htmlToText} = require('html-to-text');
@@ -7,7 +8,8 @@ const juice = require('juice');
 const path = require('path');
 
 module.exports ={
-    sendOtpToEmail
+    sendOtpToEmail,
+    verifyOtp
 };
 
 async function sendOtpToEmail(email){
@@ -15,22 +17,22 @@ async function sendOtpToEmail(email){
     //Generate OTP 
     const otp = otpGenerator.generate(4, { digits: true, upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false });
     const now = new Date();
-    //const expiration_time = AddMinutesToDate(now,10);
+    const expiration_time = AddMinutesToDate(now,10);
      
    
     //Create OTP instance in DB
-    /*const otp_instance = await db.Otp.create({
+    const otp_instance = await db.Otp.create({
       otp: otp,
       expirationDate: expiration_time
-    });*/
+    });
 
     // Create details object containing the email and otp id
     var details={
         "timestamp": now, 
         "check": email,
         "success": true,
-        "message":"OTP sent to user"/*,
-        "otp_id": otp_instance.id*/
+        "message":"OTP sent to user",
+        "otp_id": otp_instance.id
     }
 
     // Encrypt the details object    
@@ -94,4 +96,78 @@ async function sendOtpToEmail(email){
       console.log(err.message);
         throw err.message;
     } 
+}
+
+async function verifyOtp(verificationKey, otp, email){
+    try{
+         if(!verificationKey){
+           throw "Verification key not provided";        
+         }
+         if(!otp){
+           throw "OTP not Provided";        
+         }
+         if(!email){
+           throw "Email not provided";        
+         }
+     
+         let decoded;
+     
+         //Check if verification key is altered or not and store it in variable decoded after decryption
+         try{
+           let buff = new Buffer.from(verificationKey, 'base64');        
+           decoded = buff.toString('ascii');
+         }
+         catch(err) {
+           throw err.message;
+         }
+     
+         var obj= JSON.parse(decoded)
+         const check_obj = obj.check
+     
+         // Check if the OTP was meant for the same email or phone number for which it is being verified 
+         if(check_obj!=email){
+           throw "OTP was not sent to this particular email";        
+         }
+     
+         const otp_instance= await db.Otp.findOne({where:{id: obj.otp_id}});
+     
+         //Check if OTP is available in the DB
+         if(otp_instance!=null){
+           //Check if OTP is already used or not
+           if(otp_instance.isVerified!=true){
+     
+               //Check if OTP is expired or not
+               if (!otp_instance.isExpired){
+     
+                   //Check if OTP is equal to the OTP in the DB
+                   if(otp===otp_instance.otp){
+                       // Mark OTP as verified or used
+                       otp_instance.isVerified=true
+                       await otp_instance.save();     
+                       
+                       return email;
+                   }
+                   else{
+                       throw "OTP NOT Matched";                    
+                   }   
+               }
+               else{
+                   throw "OTP Expired";                
+               }
+           }
+           else{
+               throw "OTP Already Used";            
+           }
+        }
+        else{
+            throw "OTP not defined";
+        }
+    }catch(err){        
+        throw err;
+    }
+}
+
+// To add minutes to the current time
+function AddMinutesToDate(date, minutes) {
+    return new Date(date.getTime() + minutes*60000);
 }
