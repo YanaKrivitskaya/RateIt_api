@@ -49,9 +49,9 @@ function login(req, res, next){
 function refreshToken(req, res, next){    
     var device = req.headers["device-info"];
     authService.refreshToken(req.body, device)
-        .then(({user, accessToken, refreshToken}) => {    
+        .then(({account, accessToken, refreshToken}) => {    
             setCookieToken(res, refreshToken),        
-            res.json({user, accessToken})
+            res.json({account, accessToken})
         })
         .catch(next);
 }

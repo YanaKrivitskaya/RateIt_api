@@ -57,7 +57,7 @@ async function login({email, otp}, device, verificationKey){
     }
     
     return {
-        account: user.get(), 
+        account: user, 
         accessToken: accessToken, 
         refreshToken: refreshToken.token};
 }
@@ -78,7 +78,7 @@ async function refreshToken({token}, device){
     const jwt = generateJwt(user);
 
     return {
-        account: user.get(), 
+        account: user, 
         accessToken: jwt,
         refreshToken: newRefreshToken.token};    
 }
