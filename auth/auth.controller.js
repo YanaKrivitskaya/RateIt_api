@@ -43,7 +43,10 @@ function login(req, res, next){
             setCookieToken(res, refreshToken),
             res.json({account, accessToken})
         })
-        .catch(next);
+        .catch((error) => {
+            // Pass the error to Express error handler middleware
+            next(error);
+        })
 }
 
 function refreshToken(req, res, next){    
@@ -53,7 +56,10 @@ function refreshToken(req, res, next){
             setCookieToken(res, refreshToken),        
             res.json({account, accessToken})
         })
-        .catch(next);
+        .catch((error) => {
+            // Pass the error to Express error handler middleware
+            next(error);
+        })
 }
 
 function revokeToken(req, res, next){    
