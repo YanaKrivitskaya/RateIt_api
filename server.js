@@ -12,6 +12,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/auth', require('./auth/auth.controller'));
+app.use('/collections', require('./controllers/collections.controller'));
 
 app.use(errorHandler);
 
