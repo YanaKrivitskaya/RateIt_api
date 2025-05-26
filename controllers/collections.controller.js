@@ -8,7 +8,7 @@ const validateRequest = require('../helpers/validate_request');
 module.exports = router;
 
 router.get('/', authorize(), getCollections);
-router.get('/properties', authorize(), getCollectionProperties);
+router.get('/:id/properties', authorize(), getCollectionProperties);
 router.get('/:id', authorize(), getCollectionById);
 
 function getCollections(req, res, next){
@@ -18,7 +18,7 @@ function getCollections(req, res, next){
 }
 
 function getCollectionProperties(req, res, next){
-    collectionsService.getCollectionProperties(req.auth.id)
+    collectionsService.getCollectionProperties(req.params.id, req.auth.id)
     .then((properties) => res.json({properties}))
     .catch(next);
 }

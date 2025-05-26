@@ -28,6 +28,7 @@ async function initialize(){
     db.CollectionProperty = require('./models/collection_property.model')(sequelize);
     db.CollectionItemValue = require('./models/collection_item_value.model')(sequelize);
     db.DropdownValue = require('./models/dropdown_value.model')(sequelize);
+    db.Attachment = require('./models/attachment.model')(sequelize);
     
     //relations
     db.User.hasMany(db.UserToken, {onDelete: 'CASCADE'});
@@ -52,7 +53,13 @@ async function initialize(){
     db.CollectionItemValue.belongsTo(db.CollectionItem, {foreignKey: 'itemId'});
 
     db.CollectionProperty.hasMany(db.DropdownValue, {foreignKey: 'propertyId'});
-    db.DropdownValue.belongsTo(db.CollectionProperty, {foreignKey: 'propertyId'});   
+    db.DropdownValue.belongsTo(db.CollectionProperty, {foreignKey: 'propertyId'}); 
+    
+    db.Collection.hasOne(db.Attachment);
+    db.Attachment.belongsTo(db.Collection);
+
+    db.CollectionItem.hasMany(db.Attachment, {foreignKey: 'itemId'});
+    db.Attachment.belongsTo(db.CollectionItem, {foreignKey: 'itemId'});
     
 
     try {

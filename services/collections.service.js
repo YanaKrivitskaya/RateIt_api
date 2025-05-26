@@ -37,15 +37,20 @@ async function getCollectionItems(collectionId){
     const items = await db.CollectionItem.findAll(
         {            
             where: {collectionId: collectionId},
-            attributes: ["id", "name", "description", "imageSrc", "rating", "createdDate", "updatedDate"],
+            attributes: ["id", "name", "description", "rating", "createdDate", "updatedDate"],
             include: [
             {                
                 model: db.CollectionProperty, 
-                    attributes: ["name", "type", "comment", "isFilter", "isDropdown"],
+                    attributes: ["id", "name", "type", "comment", "isFilter", "isDropdown", "createdDate", "updatedDate"],
                     as: "properties",
                     through: {
                         attributes: ['value'],
                     },
+            },
+            {                
+                model: db.Attachment, 
+                    attributes: ["id", "name", "source", "createdDate", "updatedDate"],
+                    as: "attachments"
             }
         ]
         }
