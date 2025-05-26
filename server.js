@@ -12,12 +12,9 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/auth', require('./auth/auth.controller'));
+app.use('/collections', require('./controllers/collections.controller'));
 
 app.use(errorHandler);
-
-app.get('/', function (req, res) {
-  res.send('Hello World!');
-});
 
 app.listen(port, ()=>{
     console.log(`app is listening at http://localhost:${port}`);

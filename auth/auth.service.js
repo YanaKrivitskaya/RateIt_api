@@ -8,7 +8,8 @@ const otpService = require('../auth/otp.service');
 module.exports = {
     login,
     refreshToken,
-    revokeToken
+    revokeToken,
+    getUserById
 };
 
 async function createAccount(email){
@@ -118,5 +119,12 @@ async function getRefreshToken(token, device){
     const refreshToken =  await db.UserToken.findOne({ where: { token: token, deviceId: device } });
     if(!refreshToken || !refreshToken.isActive) throw 'UnauthorizedError';
     return refreshToken;
+}
+
+async function getUserById(id){
+    const user = await db.User.findByPk(id);    
+
+    if(!user) throw "User not found";
+    return user;
 }
 
