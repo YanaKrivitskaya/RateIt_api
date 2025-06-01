@@ -13,6 +13,7 @@ router.post('/verify-email', verifyEmail);
 router.post('/login', authenticateSchema, login);
 router.post('/refresh-token', tokenSchema, refreshToken);
 router.post('/revoke-token', authorize(), tokenSchema, revokeToken);
+router.get('/profile', authorize(), getUser);
 
 async function verifyEmail(req, res, next) {
     otpService.sendOtpToEmail(req.body.email)
@@ -77,6 +78,12 @@ function revokeToken(req, res, next){
             res.json({message: 'Token revoked'});
         })
         .catch(next);
+}
+
+function getUser(req, res, next){    
+    authService.getUserById(req.auth.id)
+    .then((user) => res.json({user}))
+    .catch(next); 
 }
 
 function setCookieToken(res, token){
