@@ -4,7 +4,9 @@ module.exports = (sequilize, type) =>{
     return sequilize.define('collection', {
         id:{type: DataTypes.INTEGER, allowNull: false, primaryKey: true, autoIncrement: true},
         name:{type:DataTypes.STRING(50), allowNull: false},
-        description:{type:DataTypes.STRING(250)},        
+        description:{type:DataTypes.STRING(250)},
+        icon:{type:DataTypes.INTEGER},
+        color:{type:DataTypes.INTEGER}, 
         createdDate:{type:DataTypes.DATE, allowNull: false},
         updatedDate:{type:DataTypes.DATE, allowNull: false},
     },
