@@ -54,9 +54,6 @@ async function initialize(){
 
     db.CollectionProperty.hasMany(db.DropdownValue, {foreignKey: 'propertyId'});
     db.DropdownValue.belongsTo(db.CollectionProperty, {foreignKey: 'propertyId'}); 
-    
-    db.Collection.hasOne(db.Attachment);
-    db.Attachment.belongsTo(db.Collection);
 
     db.CollectionItem.hasMany(db.Attachment, {foreignKey: 'itemId'});
     db.Attachment.belongsTo(db.CollectionItem, {foreignKey: 'itemId'});

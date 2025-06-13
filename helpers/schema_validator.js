@@ -9,7 +9,8 @@ module.exports = {
     createItemSchema,
     updateItemSchema,
     createDropdownSchema,
-    createPropertyValueSchema
+    createPropertyValueSchema,
+    createAttachmentsSchema
 }
 
 function createCollectionSchema(req, res, next) {
@@ -80,8 +81,8 @@ function createDropdownSchema(req, res, next){
         propertyId: Joi.number().required(),
         data: Joi.array().items(
             Joi.object({
-                 propertyId: Joi.number().required(),
-                 value: Joi.string().required().max(50),
+                propertyId: Joi.number().required(),
+                value: Joi.string().required().max(50),
             })
         )
     });
@@ -94,8 +95,22 @@ function createPropertyValueSchema(req, res, next){
         data: Joi.array().items(
             Joi.object({
                 itemId: Joi.number().required(),
-                 propertyId: Joi.number().required(),
-                 value: Joi.string().required().max(250),
+                propertyId: Joi.number().required(),
+                value: Joi.string().required().max(250),
+            })
+        )
+    });
+    validateRequest(req, next, schema);
+}
+
+function createAttachmentsSchema(req, res, next){
+    const schema = Joi.object({
+        itemId: Joi.number().required(),
+        data: Joi.array().items(
+            Joi.object({
+                itemId: Joi.number().required(),                
+                name: Joi.string().required().max(250),
+                source: Joi.string().required()
             })
         )
     });
