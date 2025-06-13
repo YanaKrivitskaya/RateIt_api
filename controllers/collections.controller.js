@@ -19,6 +19,7 @@ router.post('/:id/items', authorize(), validator.createItemSchema, createItem);
 router.put('/:id/items', authorize(), validator.updateItemSchema, updateItem);
 router.post('/:id/properties/dropdown', authorize(), validator.createDropdownSchema, createDropdownValue);
 router.post('/:id/properties/values', authorize(), validator.createPropertyValueSchema, createPropertyValue);
+router.post('/:id/attachments', authorize(), validator.createAttachmentsSchema, createAttachments);
 
 function getCollections(req, res, next){
     collectionsService.getCollections(req.auth.id)
@@ -94,7 +95,13 @@ function createDropdownValue(req, res, next){
 }
 
 function createPropertyValue(req, res, next){
-    collectionsService.createPropertyValues(req.body.itemId, req.body.data, req.params.id, req.auth.id)
+    collectionsService.createPropertyValues(req.body.data, req.params.id, req.body.itemId, req.auth.id)
+    .then((item) => res.json({item}))
+    .catch(next);
+}
+
+function createAttachments(req, res, next){
+    collectionsService.createAttachments(req.body.data, req.params.id, req.body.itemId, req.auth.id)
     .then((item) => res.json({item}))
     .catch(next);
 }
