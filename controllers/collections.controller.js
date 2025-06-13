@@ -3,7 +3,7 @@ const router = express.Router();
 const Joi = require('joi');
 const authorize = require('../helpers/jwt_helper');
 const collectionsService = require('../services/collections.service');
-const validateRequest = require('../helpers/validate_request');
+const validator = require('../helpers/schema_validator');
 
 module.exports = router;
 
@@ -11,14 +11,14 @@ router.get('/', authorize(), getCollections);
 router.get('/:id', authorize(), getCollectionById);
 router.get('/:id/properties', authorize(), getCollectionProperties);
 router.get('/:id/items/:itemId', authorize(), getItemWithProperties);
-router.post('/', authorize(), createCollectionSchema, createCollection);
-router.put('/', authorize(), updateCollectionSchema, updateCollection);
-router.post('/:id/properties', authorize(), createPropertySchema, createProperty);
-router.put('/:id/properties', authorize(), updatePropertySchema, updateProperty);
-router.post('/:id/items', authorize(), createItemSchema, createItem);
-router.put('/:id/items', authorize(), updateItemSchema, updateItem);
-router.post('/:id/properties/:propertyId/dropdown', authorize(), createDropdownSchema, createDropdownValue);
-router.post('/:id/properties/values', authorize(), createPropertyValue);
+router.post('/', authorize(), validator.createCollectionSchema, createCollection);
+router.put('/', authorize(), validator.updateCollectionSchema, updateCollection);
+router.post('/:id/properties', authorize(), validator.createPropertySchema, createProperty);
+router.put('/:id/properties', authorize(), validator.updatePropertySchema, updateProperty);
+router.post('/:id/items', authorize(), validator.createItemSchema, createItem);
+router.put('/:id/items', authorize(), validator.updateItemSchema, updateItem);
+router.post('/:id/properties/dropdown', authorize(), validator.createDropdownSchema, createDropdownValue);
+router.post('/:id/properties/values', authorize(), validator.createPropertyValueSchema, createPropertyValue);
 
 function getCollections(req, res, next){
     collectionsService.getCollections(req.auth.id)
@@ -44,31 +44,10 @@ function getItemWithProperties(req, res, next){
     .catch(next);
 }
 
-function createCollectionSchema(req, res, next) {
-    const schema = Joi.object({        
-        name: Joi.string().required(),
-        description: Joi.string(),
-        icon: Joi.number().allow(null, ''),
-        color: Joi.number().allow(null, '')
-    });
-    validateRequest(req, next, schema);
-}
-
 function createCollection(req, res, next){
     collectionsService.createCollection(req.body, req.auth.id)
     .then((collection) => res.json({collection}))
     .catch(next);
-}
-
-function updateCollectionSchema(req, res, next) {
-    const schema = Joi.object({
-        id: Joi.number().required(),
-        name: Joi.string().required(),
-        description: Joi.string(),
-        icon: Joi.number().allow(null, ''),
-        color: Joi.number().allow(null, '')
-    });
-    validateRequest(req, next, schema);
 }
 
 function updateCollection(req, res, next){
@@ -77,33 +56,10 @@ function updateCollection(req, res, next){
     .catch(next);
 }
 
-function createPropertySchema(req, res, next) {
-    const schema = Joi.object({        
-        name: Joi.string().required(),
-        type: Joi.string().required(),
-        comment: Joi.string(),
-        isFilter: Joi.boolean(),
-        isDropdown: Joi.boolean(),
-    });
-    validateRequest(req, next, schema);
-}
-
 function createProperty(req, res, next){
     collectionsService.createProperty(req.body, req.params.id, req.auth.id)
     .then((property) => res.json({property}))
     .catch(next);
-}
-
-function updatePropertySchema(req, res, next) {
-    const schema = Joi.object({
-        id: Joi.number().required(),
-        name: Joi.string().required(),
-        type: Joi.string().required(),
-        comment: Joi.string(),
-        isFilter: Joi.boolean(),
-        isDropdown: Joi.boolean(),
-    });
-    validateRequest(req, next, schema);
 }
 
 function updateProperty(req, res, next){
@@ -112,29 +68,10 @@ function updateProperty(req, res, next){
     .catch(next);
 }
 
-function createItemSchema(req, res, next) {
-    const schema = Joi.object({        
-        name: Joi.string().required(),
-        description: Joi.string().allow(null, ''),
-        rating: Joi.number().required()
-    });
-    validateRequest(req, next, schema);
-}
-
 function createItem(req, res, next){
     collectionsService.createItem(req.body, req.params.id, req.auth.id)
     .then((item) => res.json({item}))
     .catch(next);
-}
-
-function updateItemSchema(req, res, next) {
-    const schema = Joi.object({       
-        id: Joi.number().required(), 
-        name: Joi.string().required(),
-        description: Joi.string().allow(null, ''),
-        rating: Joi.number().required()
-    });
-    validateRequest(req, next, schema);
 }
 
 function updateItem(req, res, next){
@@ -151,8 +88,8 @@ function createDropdownSchema(req, res, next) {
 }
 
 function createDropdownValue(req, res, next){
-    collectionsService.createDropdownValue(req.body, req.params.id, req.params.propertyId, req.auth.id)
-    .then((value) => res.json({value}))
+    collectionsService.createDropdownValue(req.body.data, req.params.id, req.body.propertyId, req.auth.id)
+    .then((values) => res.json({values}))
     .catch(next);
 }
 

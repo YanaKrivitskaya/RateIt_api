@@ -202,16 +202,12 @@ async function updateItem(updItem, collectionId, userId){
     return getItemExpanded(item.id);
 }
 
-async function createDropdownValue(value, collectionId, propertyId, userId){
+async function createDropdownValue(data, collectionId, propertyId, userId){
     await userOwnsCollection(userId, collectionId);
 
-    const property  = await db.CollectionProperty.findByPk(propertyId);
+    await db.DropdownValue.bulkCreate(data);
 
-    const newValue = await db.DropdownValue.create(value);
-
-    await newValue.setCollection_property(property);
-
-    return newValue;
+    return await db.DropdownValue.findAll({where: {propertyId: propertyId}});
 }
 
 async function createPropertyValues(itemId, data, collectionId, userId){
