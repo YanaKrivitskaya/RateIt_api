@@ -18,7 +18,8 @@ function createCollectionSchema(req, res, next) {
         name: Joi.string().required().max(50),
         description: Joi.string().max(250),
         icon: Joi.number().allow(null, ''),
-        color: Joi.number().allow(null, '')
+        colorPrimary: Joi.number().allow(null, ''),
+        colorSecondary: Joi.number().allow(null, '')
     });
     validateRequest(req, next, schema);
 }
@@ -29,7 +30,8 @@ function updateCollectionSchema(req, res, next) {
         name: Joi.string().required().max(50),
         description: Joi.string().max(250),
         icon: Joi.number().allow(null, ''),
-        color: Joi.number().allow(null, '')
+        colorPrimary: Joi.number().allow(null, ''),
+        colorSecondary: Joi.number().allow(null, '')
     });
     validateRequest(req, next, schema);
 }
