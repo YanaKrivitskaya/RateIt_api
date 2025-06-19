@@ -7,7 +7,7 @@ module.exports = (sequilize, type) =>{
         description:{type:DataTypes.STRING(250)},
         icon:{type:DataTypes.INTEGER},
         colorPrimary:{type:DataTypes.INTEGER}, 
-        colorSecondary:{type:DataTypes.INTEGER}, 
+        colorAccent:{type:DataTypes.INTEGER}, 
         imageSrc:{type:DataTypes.BLOB()},
         createdDate:{type:DataTypes.DATE, allowNull: false},
         updatedDate:{type:DataTypes.DATE, allowNull: false},
