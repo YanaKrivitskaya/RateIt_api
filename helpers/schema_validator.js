@@ -16,10 +16,10 @@ module.exports = {
 function createCollectionSchema(req, res, next) {
     const schema = Joi.object({        
         name: Joi.string().required().max(50),
-        description: Joi.string().max(250),
+        description: Joi.string().max(250).allow(null, ''),
         icon: Joi.number().allow(null, ''),
         colorPrimary: Joi.number().allow(null, ''),
-        colorSecondary: Joi.number().allow(null, '')
+        colorAccent: Joi.number().allow(null, '')
     });
     validateRequest(req, next, schema);
 }
@@ -28,10 +28,10 @@ function updateCollectionSchema(req, res, next) {
     const schema = Joi.object({
         id: Joi.number().required(),
         name: Joi.string().required().max(50),
-        description: Joi.string().max(250),
+        description: Joi.string().max(250).allow(null, ''),
         icon: Joi.number().allow(null, ''),
         colorPrimary: Joi.number().allow(null, ''),
-        colorSecondary: Joi.number().allow(null, '')
+        colorAccent: Joi.number().allow(null, '')
     });
     validateRequest(req, next, schema);
 }
@@ -40,7 +40,7 @@ function createPropertySchema(req, res, next) {
     const schema = Joi.object({        
         name: Joi.string().required().max(50),
         type: Joi.string().required().max(50),
-        comment: Joi.string().max(50),
+        comment: Joi.string().max(50).allow(null, ''),
         isFilter: Joi.boolean(),
         isDropdown: Joi.boolean(),
     });
@@ -52,7 +52,7 @@ function updatePropertySchema(req, res, next) {
         id: Joi.number().required(),
         name: Joi.string().required().max(50),
         type: Joi.string().required().max(50),
-        comment: Joi.string().max(50),
+        comment: Joi.string().max(50).allow(null, ''),
         isFilter: Joi.boolean(),
         isDropdown: Joi.boolean(),
     });
