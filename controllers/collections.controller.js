@@ -17,7 +17,7 @@ router.post('/:id/properties', authorize(), validator.createPropertySchema, crea
 router.put('/:id/properties', authorize(), validator.updatePropertySchema, updateProperty);
 router.post('/:id/items', authorize(), validator.createItemSchema, createItem);
 router.put('/:id/items', authorize(), validator.updateItemSchema, updateItem);
-router.post('/:id/properties/dropdown', authorize(), validator.createDropdownSchema, createDropdownValue);
+router.post('/:id/properties/dropdown', authorize(), validator.createDropdownSchema, updateDropdownValue);
 router.post('/:id/properties/values', authorize(), validator.createPropertyValueSchema, createPropertyValue);
 router.post('/:id/attachments', authorize(), validator.createAttachmentsSchema, createAttachments);
 
@@ -81,15 +81,8 @@ function updateItem(req, res, next){
     .catch(next);
 }
 
-function createDropdownSchema(req, res, next) {
-    const schema = Joi.object({        
-        value: Joi.string().required()
-    });
-    validateRequest(req, next, schema);
-}
-
-function createDropdownValue(req, res, next){
-    collectionsService.createDropdownValue(req.body.data, req.params.id, req.body.propertyId, req.auth.id)
+function updateDropdownValue(req, res, next){
+    collectionsService.updateDropdownValue(req.body.data, req.params.id, req.body.propertyId, req.auth.id)
     .then((values) => res.json({values}))
     .catch(next);
 }

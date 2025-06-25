@@ -15,7 +15,7 @@ module.exports = {
     updateProperty,
     createItem,
     updateItem,
-    createDropdownValue,
+    updateDropdownValue,
     createPropertyValues,
     getItemWithProperties,
     createAttachments
@@ -203,8 +203,10 @@ async function updateItem(updItem, collectionId, userId){
     return getItemExpanded(item.id);
 }
 
-async function createDropdownValue(data, collectionId, propertyId, userId){
+async function updateDropdownValue(data, collectionId, propertyId, userId){
     await userOwnsCollection(userId, collectionId);
+
+    await db.DropdownValue.destroy({where:{propertyId: propertyId}});
 
     await db.DropdownValue.bulkCreate(data);
 

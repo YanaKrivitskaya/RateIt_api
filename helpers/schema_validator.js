@@ -31,7 +31,8 @@ function updateCollectionSchema(req, res, next) {
         description: Joi.string().max(250).allow(null, ''),
         icon: Joi.number().allow(null, ''),
         colorPrimary: Joi.number().allow(null, ''),
-        colorAccent: Joi.number().allow(null, '')
+        colorAccent
+        : Joi.number().allow(null, '')
     });
     validateRequest(req, next, schema);
 }
