@@ -56,7 +56,7 @@ async function getItemExpanded(itemId){
 
     const item = await db.CollectionItem.findByPk(itemId, {            
            
-            attributes: ["id", "collectionId", "name", "description", "rating", "createdDate", "updatedDate"],
+            attributes: ["id", "collectionId", "name", "description", "rating", "date", "createdDate", "updatedDate"],
             include: [                      
             {                
                 model: db.Attachment, 
@@ -103,7 +103,7 @@ async function getCollectionItems(collectionId){
     const items = await db.CollectionItem.findAll(
         {            
             where: {collectionId: collectionId},
-            attributes: ["id", "name", "description", "rating", "createdDate", "updatedDate"],
+            attributes: ["id", "name", "description", "rating", "date","createdDate", "updatedDate"],
             include: [
             {                
                 model: db.CollectionProperty, 
@@ -200,7 +200,7 @@ async function updateItem(updItem, collectionId, userId){
 
     await item.update(updItem);
 
-    return getItemExpanded(item.id);
+    return await getItemById(item.id);
 }
 
 async function updateDropdownValue(data, collectionId, propertyId, userId){
@@ -217,14 +217,20 @@ async function createPropertyValues(data, collectionId, itemId, userId){
     await userOwnsCollection(userId, collectionId);
 
     await db.CollectionItemValue.bulkCreate(data);
-    return await getItemExpanded(itemId);
+    return await getItemById(itemId);
 }
 
 async function createAttachments(data, collectionId, itemId, userId){
     await userOwnsCollection(userId, collectionId);
 
-    await db.Attachment.bulkCreate(data);
-    return await getItemExpanded(itemId);
+    let attachments = [];
+
+    data.forEach((att) => {        
+        attachments.push({itemId: itemId, name: att.originalname, source: att.buffer});
+    });    
+
+    await db.Attachment.bulkCreate(attachments);
+    return await db.Attachment.findAll({where: {itemId: itemId}});
 }
 
 async function userOwnsCollection(userId, collectionId){

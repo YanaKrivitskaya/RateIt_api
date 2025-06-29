@@ -6,6 +6,7 @@ module.exports = (sequilize, type) =>{
         name:{type:DataTypes.STRING(50), allowNull: false},
         description:{type:DataTypes.STRING(250)},        
         rating:{type:DataTypes.DECIMAL},
+        date:{type:DataTypes.DATE, allowNull: false},
         createdDate:{type:DataTypes.DATE, allowNull: false},
         updatedDate:{type:DataTypes.DATE, allowNull: false},
     },

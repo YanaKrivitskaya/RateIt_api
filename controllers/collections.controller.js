@@ -4,6 +4,10 @@ const Joi = require('joi');
 const authorize = require('../helpers/jwt_helper');
 const collectionsService = require('../services/collections.service');
 const validator = require('../helpers/schema_validator');
+const multer = require('multer');
+
+// Configure storage for uploaded files
+const upload = multer({ storage: multer.memoryStorage() })
 
 module.exports = router;
 
@@ -19,7 +23,7 @@ router.post('/:id/items', authorize(), validator.createItemSchema, createItem);
 router.put('/:id/items', authorize(), validator.updateItemSchema, updateItem);
 router.post('/:id/properties/dropdown', authorize(), validator.createDropdownSchema, updateDropdownValue);
 router.post('/:id/properties/values', authorize(), validator.createPropertyValueSchema, createPropertyValue);
-router.post('/:id/attachments', authorize(), validator.createAttachmentsSchema, createAttachments);
+router.post('/:id/:itemId/attachments', authorize(), upload.array('files', 5), createAttachments);
 
 function getCollections(req, res, next){
     collectionsService.getCollections(req.auth.id)
@@ -94,7 +98,7 @@ function createPropertyValue(req, res, next){
 }
 
 function createAttachments(req, res, next){
-    collectionsService.createAttachments(req.body.data, req.params.id, req.body.itemId, req.auth.id)
-    .then((item) => res.json({item}))
+    collectionsService.createAttachments(req.files, req.params.id, req.params.itemId, req.auth.id)
+    .then((attachments) => res.json({attachments}))
     .catch(next);
 }
