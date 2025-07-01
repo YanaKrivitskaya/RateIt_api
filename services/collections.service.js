@@ -18,7 +18,7 @@ module.exports = {
     updateDropdownValue,
     createPropertyValues,
     getItemWithProperties,
-    createAttachments
+    userOwnsCollection
 }
 
 async function getCollections(userId){
@@ -57,17 +57,25 @@ async function getItemExpanded(itemId){
     const item = await db.CollectionItem.findByPk(itemId, {            
            
             attributes: ["id", "collectionId", "name", "description", "rating", "date", "createdDate", "updatedDate"],
-            include: [                      
+            include: [     
+            {                
+                model: db.CollectionProperty, 
+                    attributes: ["id", "name", "type", "comment", "isFilter", "isDropdown", "createdDate", "updatedDate"],
+                    as: "properties",
+                    through: {
+                        attributes: ['value'],
+                    },
+            },                 
             {                
                 model: db.Attachment, 
-                    attributes: ["id", "name", "source", "createdDate", "updatedDate"],
+                    attributes: ["id", "originalName", "path", "createdDate", "updatedDate"],
                     as: "attachments"
             }
         ]
         }
     ); 
     
-    var res = item.get({plain: true});
+    /*var res = item.get({plain: true});
 
     res.properties = await db.CollectionProperty.findAll(
         {            
@@ -82,9 +90,9 @@ async function getItemExpanded(itemId){
             }            
         ]
         }
-    );
+    );*/
 
-    return res;
+    return item;
 }
 
 async function getCollectionExpanded(id, userId){
@@ -115,7 +123,7 @@ async function getCollectionItems(collectionId){
             },
             {                
                 model: db.Attachment, 
-                    attributes: ["id", "name", "source", "createdDate", "updatedDate"],
+                    attributes: ["id", "originalName", "path", "createdDate", "updatedDate"],
                     as: "attachments"
             }
         ]
