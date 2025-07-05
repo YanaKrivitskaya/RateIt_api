@@ -22,6 +22,7 @@ module.exports = router;
 
 router.post('/:collectionId/:itemId', authorize(), upload.array('files', 5), createAttachment);
 router.get('/:collectionId/:id', authorize(), getAttachment)
+router.delete('/:collectionId/:id', authorize(), deleteAttachment);
 
 function createAttachment(req, res, next){
     attachmentsService.createAttachments(req.files, req.params.collectionId, req.params.itemId, req.auth.id)
@@ -41,8 +42,8 @@ function getAttachment(req, res, next){
         .catch(next);
 }
 
-function getAttachmentBase64(req, res, next){
-    attachmentsService.getAttachmentBase64(req.params.collectionId, req.params.id, req.auth.id)
-        .then((attachment) => res.json({attachment}))
+function deleteAttachment(req, res, next){
+    attachmentsService.deleteAttachment(req.params.collectionId, req.params.id, req.auth.id)
+        .then((response) => res.json({response}))
         .catch(next);
 }

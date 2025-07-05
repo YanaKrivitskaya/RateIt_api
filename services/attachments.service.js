@@ -6,7 +6,8 @@ moment().format();
 
 module.exports = {    
     createAttachments,
-    getAttachment
+    getAttachment,
+    deleteAttachment
 }
 
 async function createAttachments(data, collectionId, itemId, userId){
@@ -38,4 +39,11 @@ async function getAttachment(collectionId, id, userId){
   return {
         fileName: att.fileName, 
         options: options};
+}
+
+async function deleteAttachment(collectionId, id, userId){
+    await collectionsService.userOwnsCollection(userId, collectionId);
+
+    await db.Attachment.destroy({where:{id: id}});
+    return "Ok";
 }
