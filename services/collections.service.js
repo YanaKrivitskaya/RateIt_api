@@ -7,6 +7,7 @@ moment().format();
 
 module.exports = {
     getCollections,
+    getCollectionBasic,
     getCollectionExpanded,
     getCollectionProperties,
     createCollection,
@@ -18,7 +19,9 @@ module.exports = {
     updateDropdownValue,
     createPropertyValues,
     getItemWithProperties,
-    userOwnsCollection
+    userOwnsCollection,
+    getPropertyBasic,
+    updatePropertyValues
 }
 
 async function getCollections(userId){
@@ -95,6 +98,16 @@ async function getItemExpanded(itemId){
     return item;
 }
 
+async function getCollectionBasic(id, userId){
+    await userOwnsCollection(userId, id);
+    return await getCollectionById(id);
+}
+
+async function getPropertyBasic(collectionId, id, userId){
+    await userOwnsCollection(userId, collectionId);
+    return await getPropertyById(id);
+}
+
 async function getCollectionExpanded(id, userId){
     await userOwnsCollection(userId, id);
 
@@ -118,7 +131,7 @@ async function getCollectionItems(collectionId){
                     attributes: ["id", "name", "type", "comment", "isFilter", "isDropdown", "createdDate", "updatedDate"],
                     as: "properties",
                     through: {
-                        attributes: ['value'],
+                        attributes: ["id", 'value'],
                     },
             },
             {                
@@ -226,6 +239,13 @@ async function createPropertyValues(data, collectionId, itemId, userId){
 
     await db.CollectionItemValue.bulkCreate(data);
     return await getItemById(itemId);
+}
+
+async function updatePropertyValues(data, collectionId, userId){
+    await userOwnsCollection(userId, collectionId);
+
+    await db.CollectionItemValue.bulkCreate(data, { updateOnDuplicate: ["value"] });
+    return "Ok";
 }
 
 async function createAttachments(data, collectionId, itemId, userId){

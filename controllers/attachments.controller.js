@@ -22,11 +22,18 @@ module.exports = router;
 
 router.post('/:collectionId/:itemId', authorize(), upload.array('files', 5), createAttachment);
 router.get('/:collectionId/:id', authorize(), getAttachment)
+router.get('/:itemId', authorize(), getCoverAttachment)
 router.delete('/:collectionId/:id', authorize(), deleteAttachment);
 
 function createAttachment(req, res, next){
     attachmentsService.createAttachments(req.files, req.params.collectionId, req.params.itemId, req.auth.id)
         .then((attachments) => res.json({attachments}))
+        .catch(next);
+}
+
+function getCoverAttachment(req, res, next){
+    attachmentsService.getCoverAttachment(req.params.itemId, req.auth.id)
+        .then((attachment) => res.json({attachment}))
         .catch(next);
 }
 

@@ -9,7 +9,8 @@ module.exports = {
     createItemSchema,
     updateItemSchema,
     createDropdownSchema,
-    createPropertyValueSchema
+    createPropertyValueSchema,
+    updatePropertyValueSchema
 }
 
 function createCollectionSchema(req, res, next) {
@@ -100,6 +101,18 @@ function createPropertyValueSchema(req, res, next){
             Joi.object({
                 itemId: Joi.number().required(),
                 propertyId: Joi.number().required(),
+                value: Joi.string().required().max(250),
+            })
+        )
+    });
+    validateRequest(req, next, schema);
+}
+
+function updatePropertyValueSchema(req, res, next){
+    const schema = Joi.object({        
+        data: Joi.array().items(
+            Joi.object({
+                id: Joi.number().required(),               
                 value: Joi.string().required().max(250),
             })
         )

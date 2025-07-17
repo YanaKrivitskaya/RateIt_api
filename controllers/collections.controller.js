@@ -12,8 +12,10 @@ const upload = multer({ storage: multer.memoryStorage() })
 module.exports = router;
 
 router.get('/', authorize(), getCollections);
+router.get('/basic/:id', authorize(), getCollectionBasic);
 router.get('/:id', authorize(), getCollectionById);
 router.get('/:id/properties', authorize(), getCollectionProperties);
+router.get('/:id/properties/:propertyId', authorize(), getPropertyBasic);
 router.get('/:id/items/:itemId', authorize(), getItemWithProperties);
 router.post('/', authorize(), validator.createCollectionSchema, createCollection);
 router.put('/', authorize(), validator.updateCollectionSchema, updateCollection);
@@ -23,6 +25,7 @@ router.post('/:id/items', authorize(), validator.createItemSchema, createItem);
 router.put('/:id/items', authorize(), validator.updateItemSchema, updateItem);
 router.post('/:id/properties/dropdown', authorize(), validator.createDropdownSchema, updateDropdownValue);
 router.post('/:id/properties/values', authorize(), validator.createPropertyValueSchema, createPropertyValue);
+router.put('/:id/properties/values', authorize(), validator.updatePropertyValueSchema, updatePropertyValue);
 router.post('/:id/:itemId/attachments', authorize(), upload.array('files', 5), createAttachments);
 
 function getCollections(req, res, next){
@@ -37,9 +40,21 @@ function getCollectionProperties(req, res, next){
     .catch(next);
 }
 
+function getCollectionBasic(req, res, next){
+    collectionsService.getCollectionBasic(req.params.id, req.auth.id)
+    .then((collection) => res.json({collection}))
+    .catch(next);
+}
+
 function getCollectionById(req, res, next){
     collectionsService.getCollectionExpanded(req.params.id, req.auth.id)
     .then((collection) => res.json({collection}))
+    .catch(next);
+}
+
+function getPropertyBasic(req, res, next){
+    collectionsService.getPropertyBasic(req.params.id, req.params.propertyId, req.auth.id)
+    .then((property) => res.json({property}))
     .catch(next);
 }
 
@@ -94,6 +109,12 @@ function updateDropdownValue(req, res, next){
 function createPropertyValue(req, res, next){
     collectionsService.createPropertyValues(req.body.data, req.params.id, req.body.itemId, req.auth.id)
     .then((item) => res.json({item}))
+    .catch(next);
+}
+
+function updatePropertyValue(req, res, next){
+    collectionsService.updatePropertyValues(req.body.data, req.params.id, req.auth.id)
+    .then((response) => res.json({response}))
     .catch(next);
 }
 

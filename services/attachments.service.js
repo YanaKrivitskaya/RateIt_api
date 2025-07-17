@@ -7,7 +7,8 @@ moment().format();
 module.exports = {    
     createAttachments,
     getAttachment,
-    deleteAttachment
+    deleteAttachment,
+    getCoverAttachment
 }
 
 async function createAttachments(data, collectionId, itemId, userId){
@@ -21,6 +22,16 @@ async function createAttachments(data, collectionId, itemId, userId){
 
     await db.Attachment.bulkCreate(attachments);
     return await db.Attachment.findAll({where: {itemId: itemId}});
+}
+
+async function getCoverAttachment(itemId, userId){
+    var item =  await db.CollectionItem.findByPk(itemId);
+    var collection = await item.getCollection();
+
+    await collectionsService.userOwnsCollection(userId, collection.id);
+
+    return await db.Attachment.findOne({where: {itemId: itemId}});
+    //var collection = db.Collection
 }
 
 async function getAttachment(collectionId, id, userId){
