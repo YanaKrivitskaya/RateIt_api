@@ -31,7 +31,7 @@ module.exports = {
 async function getCollections(userId){
     const user = await auth.getUserById(userId);
     
-    return await user.getCollections();
+    return await user.getCollections({where: {deleted: 0}});
 }
 
 async function getCollectionById(id){    

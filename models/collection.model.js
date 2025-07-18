@@ -11,6 +11,8 @@ module.exports = (sequilize, type) =>{
         imageSrc:{type:DataTypes.BLOB()},
         createdDate:{type:DataTypes.DATE, allowNull: false},
         updatedDate:{type:DataTypes.DATE, allowNull: false},
+        deleted:{type:DataTypes.BOOLEAN, defaultValue: 0},
+        deletedDate:{type:DataTypes.DATE}
     },
         {            
             createdAt: 'createdDate',

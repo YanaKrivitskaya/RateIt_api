@@ -30,6 +30,8 @@ router.post('/:id/:itemId/attachments', authorize(), upload.array('files', 5), c
 
 router.delete('/dropdown/:id', authorize(), deleteDropdownValue);
 router.delete('/properties/:id', authorize(), deleteProperty);
+router.delete('/items/:id', authorize(), deleteItem);
+router.delete('/:id', authorize(), deleteCollection);
 
 function getCollections(req, res, next){
     collectionsService.getCollections(req.auth.id)
@@ -135,6 +137,18 @@ function deleteDropdownValue(req, res, next){
 
 function deleteProperty(req, res, next){
     collectionsService.deleteProperty(req.params.id, req.auth.id)
+    .then((response) => res.json({response}))
+    .catch(next);
+}
+
+function deleteItem(req, res, next){
+    collectionsService.deleteItem(req.params.id, req.auth.id)
+    .then((response) => res.json({response}))
+    .catch(next);
+}
+
+function deleteCollection(req, res, next){
+    collectionsService.deleteCollection(req.params.id, req.auth.id)
     .then((response) => res.json({response}))
     .catch(next);
 }
