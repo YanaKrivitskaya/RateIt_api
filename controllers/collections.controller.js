@@ -28,6 +28,9 @@ router.post('/:id/properties/values', authorize(), validator.createPropertyValue
 router.put('/:id/properties/values', authorize(), validator.updatePropertyValueSchema, updatePropertyValue);
 router.post('/:id/:itemId/attachments', authorize(), upload.array('files', 5), createAttachments);
 
+router.delete('/dropdown/:id', authorize(), deleteDropdownValue);
+router.delete('/properties/:id', authorize(), deleteProperty);
+
 function getCollections(req, res, next){
     collectionsService.getCollections(req.auth.id)
     .then((collections) => res.json({collections}))
@@ -123,3 +126,16 @@ function createAttachments(req, res, next){
     .then((attachments) => res.json({attachments}))
     .catch(next);
 }
+
+function deleteDropdownValue(req, res, next){
+    collectionsService.deleteDropdownValue(req.params.id, req.auth.id)
+    .then((response) => res.json({response}))
+    .catch(next);
+}
+
+function deleteProperty(req, res, next){
+    collectionsService.deleteProperty(req.params.id, req.auth.id)
+    .then((response) => res.json({response}))
+    .catch(next);
+}
+

@@ -21,7 +21,11 @@ module.exports = {
     getItemWithProperties,
     userOwnsCollection,
     getPropertyBasic,
-    updatePropertyValues
+    updatePropertyValues,
+    deleteDropdownValue,
+    deleteProperty,
+    deleteItem,
+    deleteCollection
 }
 
 async function getCollections(userId){
@@ -76,24 +80,7 @@ async function getItemExpanded(itemId){
             }
         ]
         }
-    ); 
-    
-    /*var res = item.get({plain: true});
-
-    res.properties = await db.CollectionProperty.findAll(
-        {            
-            where: {collectionId: item.collectionId},
-            include:[{
-                model: db.DropdownValue,
-                attributes: ['value'],
-            },
-            {
-                association: 'value',
-                attributes: ['value'],
-            }            
-        ]
-        }
-    );*/
+    );  
 
     return item;
 }
@@ -248,17 +235,85 @@ async function updatePropertyValues(data, collectionId, userId){
     return "Ok";
 }
 
-async function createAttachments(data, collectionId, itemId, userId){
+async function deleteDropdownValue(dropdownId, userId){
+    const dropdown = await db.DropdownValue.findByPk(dropdownId);
+    const property = await dropdown.getCollection_property();
+    const collection = await property.getCollection();
+
+    await userOwnsCollection(userId, collection.id);
+
+    await db.DropdownValue.destroy({where:{id: dropdownId}});
+    return "Ok";
+}
+
+async function deleteProperty(propertyId, userId){
+    const property = await db.CollectionProperty.findByPk(propertyId);
+    const collection = await property.getCollection();
+
+    await userOwnsCollection(userId, collection.id);
+
+    await destroyProperty(propertyId);
+
+    return "Ok";
+}
+
+async function destroyProperty(propertyId){
+    await db.DropdownValue.destroy({where:{propertyId: propertyId}});
+    await db.CollectionItemValue.destroy({where:{propertyId: propertyId}});
+    await db.CollectionProperty.destroy({where:{id: propertyId}});
+}
+
+async function deleteItem(itemId, userId){
+    const item = await db.CollectionItem.findByPk(itemId);
+    const collection = await item.getCollection();
+
+    await userOwnsCollection(userId, collection.id);
+    
+    const properties = await item.getProperties();
+    for (const prop of properties){
+        await db.CollectionItemValue.destroy({where:{propertyId: prop.id}});
+    } 
+
+    await destroyItem(itemId);
+    
+    return "Ok";
+}
+
+async function destroyItem(itemId){
+    await db.Attachment.destroy({where:{itemId: itemId}});
+    await db.CollectionItem.destroy({where:{id: itemId}});
+}
+
+async function deleteCollection(collectionId, userId){
     await userOwnsCollection(userId, collectionId);
 
-    let attachments = [];
+    await db.Collection.update({ 
+        deleted: 1,
+        deletedDate: Date.now()
+     }, {
+        where: {
+          id: collectionId
+        }
+      });
+    return "Ok";
+}
 
-    data.forEach((att) => {        
-        attachments.push({itemId: itemId, name: att.originalname, source: att.buffer});
-    });    
+async function destroyCollection(collectionId, userId){
+    await userOwnsCollection(userId, collectionId);
 
-    await db.Attachment.bulkCreate(attachments);
-    return await db.Attachment.findAll({where: {itemId: itemId}});
+    const collection = await db.Collection.findByPk(collectionId);
+
+    const items = await collection.getCollection_items();
+    for (const item of items){
+        await destroyItem(item.id);
+    } 
+
+    const properties = await collection.getCollection_properties();
+    for (const prop of properties){
+        await destroyProperty(prop.id);
+    }  
+
+    return "Ok";
 }
 
 async function userOwnsCollection(userId, collectionId){
