@@ -44,6 +44,7 @@ function createPropertySchema(req, res, next) {
         comment: Joi.string().max(50).allow(null, ''),
         isFilter: Joi.boolean(),
         isDropdown: Joi.boolean(),
+        isRequired: Joi.boolean(),
     });
     validateRequest(req, next, schema);
 }
@@ -56,6 +57,7 @@ function updatePropertySchema(req, res, next) {
         comment: Joi.string().max(50).allow(null, ''),
         isFilter: Joi.boolean(),
         isDropdown: Joi.boolean(),
+        isRequired: Joi.boolean(),
     });
     validateRequest(req, next, schema);
 }

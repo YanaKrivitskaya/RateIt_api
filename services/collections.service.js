@@ -67,10 +67,10 @@ async function getItemExpanded(itemId){
             include: [     
             {                
                 model: db.CollectionProperty, 
-                    attributes: ["id", "name", "type", "comment", "isFilter", "isDropdown", "createdDate", "updatedDate"],
+                    attributes: ["id", "name", "type", "comment", "isFilter", "isDropdown", "isRequired", "createdDate", "updatedDate"],
                     as: "properties",
                     through: {
-                        attributes: ['value'],
+                        attributes: ["id", 'value'],
                     },
             },                 
             {                
@@ -115,8 +115,8 @@ async function getCollectionItems(collectionId){
             include: [
             {                
                 model: db.CollectionProperty, 
-                    attributes: ["id", "name", "type", "comment", "isFilter", "isDropdown", "createdDate", "updatedDate"],
-                    as: "properties",
+                    attributes: ["id", "name", "type", "comment", "isFilter", "isDropdown", "isRequired", "createdDate", "updatedDate"],
+                    as: "properties",                    
                     through: {
                         attributes: ["id", 'value'],
                     },

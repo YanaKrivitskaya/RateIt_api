@@ -8,6 +8,7 @@ module.exports = (sequilize, type) =>{
         comment:{type:DataTypes.STRING(50)},
         isFilter:{type:DataTypes.BOOLEAN},
         isDropdown:{type:DataTypes.BOOLEAN},
+        isRequired:{type:DataTypes.BOOLEAN},
         createdDate:{type:DataTypes.DATE, allowNull: false},
         updatedDate:{type:DataTypes.DATE, allowNull: false},
     },
