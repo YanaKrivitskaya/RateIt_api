@@ -28,6 +28,8 @@ router.post('/:id/properties/values', authorize(), validator.createPropertyValue
 router.put('/:id/properties/values', authorize(), validator.updatePropertyValueSchema, updatePropertyValue);
 router.post('/:id/:itemId/attachments', authorize(), upload.array('files', 5), createAttachments);
 
+router.get('/properties/:id', authorize(), getPropertyExpanded);
+
 router.delete('/dropdown/:id', authorize(), deleteDropdownValue);
 router.delete('/properties/:id', authorize(), deleteProperty);
 router.delete('/items/:id', authorize(), deleteItem);
@@ -59,6 +61,12 @@ function getCollectionById(req, res, next){
 
 function getPropertyBasic(req, res, next){
     collectionsService.getPropertyBasic(req.params.id, req.params.propertyId, req.auth.id)
+    .then((property) => res.json({property}))
+    .catch(next);
+}
+
+function getPropertyExpanded(req, res, next){
+    collectionsService.getPropertyExpanded(req.params.id, req.auth.id)
     .then((property) => res.json({property}))
     .catch(next);
 }

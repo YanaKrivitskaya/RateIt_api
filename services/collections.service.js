@@ -21,6 +21,7 @@ module.exports = {
     getItemWithProperties,
     userOwnsCollection,
     getPropertyBasic,
+    getPropertyExpanded,
     updatePropertyValues,
     deleteDropdownValue,
     deleteProperty,
@@ -93,6 +94,19 @@ async function getCollectionBasic(id, userId){
 async function getPropertyBasic(collectionId, id, userId){
     await userOwnsCollection(userId, collectionId);
     return await getPropertyById(id);
+}
+
+async function getPropertyExpanded(propertyId, userId){
+    await userOwnsProperty(userId, propertyId);
+
+   return await db.CollectionProperty.findByPk(propertyId, 
+        {            
+            include:[{
+                model: db.DropdownValue,
+                attributes: ['value'],
+            }]
+        }
+    );    
 }
 
 async function getCollectionExpanded(id, userId){
@@ -247,10 +261,7 @@ async function deleteDropdownValue(dropdownId, userId){
 }
 
 async function deleteProperty(propertyId, userId){
-    const property = await db.CollectionProperty.findByPk(propertyId);
-    const collection = await property.getCollection();
-
-    await userOwnsCollection(userId, collection.id);
+    await userOwnsProperty(userId, propertyId);
 
     await destroyProperty(propertyId);
 
@@ -323,4 +334,11 @@ async function userOwnsCollection(userId, collectionId){
 
     if(userCollections.length == 0) throw "No permissions for this collection";
     return true;
+}
+
+async function userOwnsProperty(userId, propertyId){
+    const property = await db.CollectionProperty.findByPk(propertyId);
+    const collection = await property.getCollection();
+
+    await userOwnsCollection(userId, collection.id);
 }
