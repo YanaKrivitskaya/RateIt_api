@@ -9,6 +9,8 @@ module.exports = (sequilize, type) =>{
         isFilter:{type:DataTypes.BOOLEAN},
         isDropdown:{type:DataTypes.BOOLEAN},
         isRequired:{type:DataTypes.BOOLEAN},
+        minValue:{type: DataTypes.INTEGER},
+        maxValue:{type: DataTypes.INTEGER},
         createdDate:{type:DataTypes.DATE, allowNull: false},
         updatedDate:{type:DataTypes.DATE, allowNull: false},
     },

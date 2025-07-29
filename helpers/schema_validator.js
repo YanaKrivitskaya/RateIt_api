@@ -45,6 +45,8 @@ function createPropertySchema(req, res, next) {
         isFilter: Joi.boolean(),
         isDropdown: Joi.boolean(),
         isRequired: Joi.boolean(),
+        minValue: Joi.number().allow(null, ''),
+        maxValue: Joi.number().allow(null, ''),
     });
     validateRequest(req, next, schema);
 }
@@ -58,6 +60,8 @@ function updatePropertySchema(req, res, next) {
         isFilter: Joi.boolean(),
         isDropdown: Joi.boolean(),
         isRequired: Joi.boolean(),
+        minValue: Joi.number().allow(null, ''),
+        maxValue: Joi.number().allow(null, ''),
     });
     validateRequest(req, next, schema);
 }
