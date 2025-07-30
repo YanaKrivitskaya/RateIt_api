@@ -8,6 +8,7 @@ module.exports = (sequilize, type) =>{
         itemId: {type: DataTypes.INTEGER, allowNull: false},        
         path:{type:DataTypes.STRING(250)},
         source:{type:DataTypes.BLOB()},
+        blurHash :{type:DataTypes.STRING(500), allowNull: false}, 
         createdDate:{type:DataTypes.DATE, allowNull: false},
         updatedDate:{type:DataTypes.DATE, allowNull: false},
     },

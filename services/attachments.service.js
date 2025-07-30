@@ -1,6 +1,7 @@
 const db = require('../db');
 const collectionsService = require('../services/collections.service');
 const path = require('path');
+const fs = require('fs');
 var moment = require('moment'); // require
 moment().format(); 
 
@@ -54,6 +55,14 @@ async function getAttachment(collectionId, id, userId){
 
 async function deleteAttachment(collectionId, id, userId){
     await collectionsService.userOwnsCollection(userId, collectionId);
+    var att =  await db.Attachment.findByPk(id);
+
+    await fs.unlink(att.path, (err) => {
+        if (err) {
+            console.error('Error deleting file:', err);
+            return res.status(500).send('Error deleting file.');
+        }        
+    });
 
     await db.Attachment.destroy({where:{id: id}});
     return "Ok";
