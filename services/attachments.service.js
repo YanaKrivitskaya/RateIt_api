@@ -4,8 +4,6 @@ const path = require('path');
 const fs = require('fs');
 var moment = require('moment'); // require
 moment().format(); 
-const { encode } = require('blurhash');
-const sharp = require('sharp');
 
 module.exports = {    
     createAttachments,
@@ -19,9 +17,8 @@ async function createAttachments(data, collectionId, itemId, userId){
 
     let attachments = [];
 
-    for(const att of data){
-        var hash = await encodeImageToBlurhash(att.path);
-        attachments.push({itemId: itemId, originalName: att.originalname, path: att.path, fileName: att.filename, blurHash: hash});
+    for(const att of data){        
+        attachments.push({itemId: itemId, originalName: att.originalname, path: att.path, fileName: att.filename});
     }
 
     await db.Attachment.bulkCreate(attachments);
@@ -70,30 +67,3 @@ async function deleteAttachment(collectionId, id, userId){
     await db.Attachment.destroy({where:{id: id}});
     return "Ok";
 }
-
-async function encodeImageToBlurhash(imagePath, componentX = 4, componentY = 4) {
-      try {
-        const image = sharp(imagePath);
-        const metadata = await image.metadata();
-
-        // Ensure image has RGBA format for BlurHash
-        const { data, info } = await image
-          .raw()
-          .ensureAlpha()
-          .toBuffer({ resolveWithObject: true });
-
-        // Encode the image data to a BlurHash string
-        const blurhash = encode(
-          data,
-          info.width,
-          info.height,
-          componentX, // Number of components in X direction
-          componentY  // Number of components in Y direction
-        );
-
-        return blurhash;
-      } catch (error) {
-        console.error('Error encoding BlurHash:', error);
-        throw error;
-      }
-    }

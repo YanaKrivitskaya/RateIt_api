@@ -76,7 +76,7 @@ async function getItemExpanded(itemId){
             },                 
             {                
                 model: db.Attachment, 
-                    attributes: ["id", "originalName", "path", "blurHash", "createdDate", "updatedDate"],
+                    attributes: ["id", "originalName", "path", "createdDate", "updatedDate"],
                     as: "attachments"
             }
         ]
@@ -137,7 +137,7 @@ async function getCollectionItems(collectionId){
             },
             {                
                 model: db.Attachment, 
-                    attributes: ["id", "originalName", "path", "blurHash", "createdDate", "updatedDate"],
+                    attributes: ["id", "originalName", "path", "createdDate", "updatedDate"],
                     as: "attachments"
             }
         ]
