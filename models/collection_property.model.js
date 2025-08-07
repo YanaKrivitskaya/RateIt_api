@@ -11,6 +11,7 @@ module.exports = (sequilize, type) =>{
         isRequired:{type:DataTypes.BOOLEAN},
         minValue:{type: DataTypes.INTEGER},
         maxValue:{type: DataTypes.INTEGER},
+        order:{type: DataTypes.INTEGER},
         createdDate:{type:DataTypes.DATE, allowNull: false},
         updatedDate:{type:DataTypes.DATE, allowNull: false},
     },
