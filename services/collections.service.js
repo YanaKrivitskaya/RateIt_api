@@ -282,7 +282,7 @@ async function deleteItem(itemId, userId){
     
     const properties = await item.getProperties();
     for (const prop of properties){
-        await db.CollectionItemValue.destroy({where:{propertyId: prop.id}});
+        await db.CollectionItemValue.destroy({where:{propertyId: prop.id, itemId: item.id}});
     } 
 
     await destroyItem(itemId);
