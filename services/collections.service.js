@@ -69,7 +69,7 @@ async function getItemExpanded(itemId){
             {                
                 model: db.CollectionProperty, 
                     attributes: ["id", "name", "type", "comment", "isFilter", "isDropdown", "isRequired", "minValue", "maxValue", "order", "createdDate", "updatedDate"],
-                    as: "properties",
+                    as: "properties",                    
                     through: {
                         attributes: ["id", 'value'],
                     },
@@ -79,7 +79,8 @@ async function getItemExpanded(itemId){
                     attributes: ["id", "originalName", "path", "createdDate", "updatedDate"],
                     as: "attachments"
             }
-        ]
+        ],
+        order: [[{ model: db.CollectionProperty, as: "properties" }, 'order', 'ASC']]
         }
     );  
 
@@ -140,7 +141,8 @@ async function getCollectionItems(collectionId){
                     attributes: ["id", "originalName", "path", "createdDate", "updatedDate"],
                     as: "attachments"
             }
-        ]
+        ],
+        order: [[{ model: db.CollectionProperty, as: "properties" }, 'order', 'ASC']]
         }
     );
 
@@ -151,6 +153,9 @@ async function getCollectionProperties(collectionId){
     const items = await db.CollectionProperty.findAll(
         {            
             where: {collectionId: collectionId},
+            order: [
+                ['order', 'ASC']
+            ],
             include:[{
                 model: db.DropdownValue,
                 attributes: ['value'],
