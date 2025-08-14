@@ -1,7 +1,7 @@
 const db = require('../db');
 const auth = require('../auth/auth.service');
 const fs = require('fs');
-const { Op, where } = require("sequelize");
+const Sequelize = require('sequelize');
 var moment = require('moment'); // require
 moment().format(); 
 
@@ -26,7 +26,8 @@ module.exports = {
     deleteDropdownValue,
     deleteProperty,
     deleteItem,
-    deleteCollection
+    deleteCollection,
+    getPropertyValuesDistinct
 }
 
 async function getCollections(userId){
@@ -156,14 +157,29 @@ async function getCollectionProperties(collectionId){
             order: [
                 ['order', 'ASC']
             ],
-            include:[{
-                model: db.DropdownValue,
-                attributes: ['value'],
-            }]
+            include:[
+                {
+                    model: db.DropdownValue,
+                    attributes: ['value'],
+                }
+        ]
         }
     );
 
     return items;
+}
+
+async function getPropertyValuesDistinct(propertyId, userId){
+    await userOwnsProperty(userId, propertyId);
+
+    const values = await db.CollectionItemValue.findAll(
+        {            
+            where: {propertyId: propertyId},            
+            attributes:[Sequelize.fn('DISTINCT', Sequelize.col('value')), 'value']
+        }
+    );
+
+    return values;
 }
 
 async function createCollection(collection, userId){

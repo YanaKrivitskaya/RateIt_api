@@ -29,6 +29,7 @@ router.put('/:id/properties/values', authorize(), validator.updatePropertyValueS
 router.post('/:id/:itemId/attachments', authorize(), upload.array('files', 5), createAttachments);
 
 router.get('/properties/:id', authorize(), getPropertyExpanded);
+router.get('/properties/:id/values', authorize(), getPropertyValuesDistinct);
 
 router.delete('/dropdown/:id', authorize(), deleteDropdownValue);
 router.delete('/properties/:id', authorize(), deleteProperty);
@@ -68,6 +69,12 @@ function getPropertyBasic(req, res, next){
 function getPropertyExpanded(req, res, next){
     collectionsService.getPropertyExpanded(req.params.id, req.auth.id)
     .then((property) => res.json({property}))
+    .catch(next);
+}
+
+function getPropertyValuesDistinct(req, res, next){
+    collectionsService.getPropertyValuesDistinct(req.params.id, req.auth.id)
+    .then((values) => res.json({values}))
     .catch(next);
 }
 
