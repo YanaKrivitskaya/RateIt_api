@@ -91,7 +91,6 @@ function updateItemSchema(req, res, next) {
 
 function createDropdownSchema(req, res, next){
     const schema = Joi.object({
-        propertyId: Joi.number().required(),
         data: Joi.array().items(
             Joi.object({
                 propertyId: Joi.number().required(),
@@ -104,14 +103,13 @@ function createDropdownSchema(req, res, next){
 
 function createPropertyValueSchema(req, res, next){
     const schema = Joi.object({
-        itemId: Joi.number().required(),
         data: Joi.array().items(
             Joi.object({
                 itemId: Joi.number().required(),
                 propertyId: Joi.number().required(),
                 value: Joi.string().required().max(250),
             })
-        )
+        )        
     });
     validateRequest(req, next, schema);
 }

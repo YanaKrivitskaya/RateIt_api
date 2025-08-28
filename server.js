@@ -13,6 +13,8 @@ app.use(cors());
 
 app.use('/auth', require('./auth/auth.controller'));
 app.use('/collections', require('./controllers/collections.controller'));
+app.use('/properties', require('./controllers/properties.controller'));
+app.use('/items', require('./controllers/items.controller'));
 app.use('/attachments', require('./controllers/attachments.controller'));
 
 app.use(errorHandler);
