@@ -1,11 +1,12 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequilize, type) =>{
-    return sequilize.define('collection_item_value', {
+    return sequilize.define('item', {
         id:{type: DataTypes.INTEGER, allowNull: false, primaryKey: true, autoIncrement: true},
-        itemId:{type: DataTypes.INTEGER, allowNull: false},
-        propertyId:{type: DataTypes.INTEGER, allowNull: false},
-        value:{type:DataTypes.STRING(250), allowNull: false},        
+        name:{type:DataTypes.STRING(50), allowNull: false},
+        description:{type:DataTypes.STRING(250)},        
+        rating:{type:DataTypes.DECIMAL},
+        date:{type:DataTypes.DATE, allowNull: false},
         createdDate:{type:DataTypes.DATE, allowNull: false},
         updatedDate:{type:DataTypes.DATE, allowNull: false},
     },

@@ -24,9 +24,9 @@ async function initialize(){
     db.UserToken = require('./auth/userToken.model')(sequelize);    
     db.Otp = require('./auth/otp.model')(sequelize);
     db.Collection = require('./models/collection.model')(sequelize);
-    db.CollectionItem = require('./models/collection_item.model')(sequelize);
-    db.CollectionProperty = require('./models/collection_property.model')(sequelize);
-    db.CollectionItemValue = require('./models/collection_item_value.model')(sequelize);
+    db.Item = require('./models/item.model')(sequelize);
+    db.Property = require('./models/property.model')(sequelize);
+    db.PropertyValue = require('./models/property_value.model')(sequelize);
     db.DropdownValue = require('./models/dropdown_value.model')(sequelize);
     db.Attachment = require('./models/attachment.model')(sequelize);
     
@@ -37,26 +37,26 @@ async function initialize(){
     db.User.hasMany(db.Collection);
     db.Collection.belongsTo(db.User);
 
-    db.Collection.hasMany(db.CollectionItem);
-    db.CollectionItem.belongsTo(db.Collection);
+    db.Collection.hasMany(db.Item);
+    db.Item.belongsTo(db.Collection);
 
-    db.Collection.hasMany(db.CollectionProperty);
-    db.CollectionProperty.belongsTo(db.Collection);
+    db.Collection.hasMany(db.Property);
+    db.Property.belongsTo(db.Collection);
 
-    db.CollectionItem.belongsToMany(db.CollectionProperty, {through: 'collection_item_value', as: 'properties', foreignKey: 'itemId' });
-    db.CollectionProperty.belongsToMany(db.CollectionItem, {through: 'collection_item_value', as: 'items', foreignKey: 'propertyId'});
+    db.Item.belongsToMany(db.Property, {through: 'property_value', as: 'properties', foreignKey: 'itemId' });
+    db.Property.belongsToMany(db.Item, {through: 'property_value', as: 'items', foreignKey: 'propertyId'});
 
-    db.CollectionProperty.hasMany(db.CollectionItemValue, {as: 'value', foreignKey: 'propertyId'});
-    db.CollectionItemValue.belongsTo(db.CollectionProperty, {as: 'property', foreignKey: 'propertyId'});
+    db.Property.hasMany(db.PropertyValue, {as: 'value', foreignKey: 'propertyId'});
+    db.PropertyValue.belongsTo(db.Property, {as: 'property', foreignKey: 'propertyId'});
 
-    db.CollectionItem.hasMany(db.CollectionItemValue, {as: 'values', foreignKey: 'itemId'});
-    db.CollectionItemValue.belongsTo(db.CollectionItem, {foreignKey: 'itemId'});
+    db.Item.hasMany(db.PropertyValue, {as: 'values', foreignKey: 'itemId'});
+    db.PropertyValue.belongsTo(db.Item, {foreignKey: 'itemId'});
 
-    db.CollectionProperty.hasMany(db.DropdownValue, {foreignKey: 'propertyId'});
-    db.DropdownValue.belongsTo(db.CollectionProperty, {foreignKey: 'propertyId'}); 
+    db.Property.hasMany(db.DropdownValue, {foreignKey: 'propertyId'});
+    db.DropdownValue.belongsTo(db.Property, {foreignKey: 'propertyId'}); 
 
-    db.CollectionItem.hasMany(db.Attachment, {foreignKey: 'itemId'});
-    db.Attachment.belongsTo(db.CollectionItem, {foreignKey: 'itemId'});
+    db.Item.hasMany(db.Attachment, {foreignKey: 'itemId'});
+    db.Attachment.belongsTo(db.Item, {foreignKey: 'itemId'});
     
 
     try {

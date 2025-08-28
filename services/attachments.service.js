@@ -1,5 +1,5 @@
 const db = require('../db');
-const collectionsService = require('../services/collections.service');
+const itemsService = require('./items.service');
 const path = require('path');
 const fs = require('fs');
 var moment = require('moment'); // require
@@ -12,8 +12,8 @@ module.exports = {
     getCoverAttachment
 }
 
-async function createAttachments(data, collectionId, itemId, userId){
-    await collectionsService.userOwnsCollection(userId, collectionId);
+async function createAttachments(data, itemId, userId){
+    await itemsService.userOwnsItem(userId, itemId);
 
     let attachments = [];
 
@@ -26,19 +26,15 @@ async function createAttachments(data, collectionId, itemId, userId){
 }
 
 async function getCoverAttachment(itemId, userId){
-    var item =  await db.CollectionItem.findByPk(itemId);
-    var collection = await item.getCollection();
-
-    await collectionsService.userOwnsCollection(userId, collection.id);
-
-    return await db.Attachment.findOne({where: {itemId: itemId}});
-    //var collection = db.Collection
+    await itemsService.userOwnsItem(userId, itemId);
+    return await db.Attachment.findOne({where: {itemId: itemId}});    
 }
 
-async function getAttachment(collectionId, id, userId){
-    await collectionsService.userOwnsCollection(userId, collectionId);
+async function getAttachment(id, userId){
     var att =  await db.Attachment.findByPk(id);
-
+    var item = await att.getItem();
+    await itemsService.userOwnsItem(userId, item.id);
+    
     const options = {
     root: path.join(__dirname, '../uploads'),
     dotfiles: 'deny',
@@ -53,9 +49,10 @@ async function getAttachment(collectionId, id, userId){
         options: options};
 }
 
-async function deleteAttachment(collectionId, id, userId){
-    await collectionsService.userOwnsCollection(userId, collectionId);
+async function deleteAttachment(id, userId){
     var att =  await db.Attachment.findByPk(id);
+    var item = await att.getItem();
+    await itemsService.userOwnsItem(userId, item.id);
 
     await fs.unlink(att.path, (err) => {
         if (err) {
